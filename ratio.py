@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, List
 from math import ceil
 from bst import BinarySearchTree
 from node import TreeNode
