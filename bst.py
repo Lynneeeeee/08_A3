@@ -96,6 +96,9 @@ class BinarySearchTree(Generic[K, I]):
             current.right = self.insert_aux(current.right, key, item)
         else:  # key == current.key
             raise ValueError('Inserting duplicate item')
+
+        current.subtree_size = 1 + (current.left.subtree_size if current.left else 0) + (
+            current.right.subtree_size if current.right else 0)
         return current
 
     def __delitem__(self, key: K) -> None:
@@ -130,6 +133,8 @@ class BinarySearchTree(Generic[K, I]):
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
+        current.subtree_size = 1 + (current.left.subtree_size if current.left else 0) + (
+            current.right.subtree_size if current.right else 0)
         return current
 
     def get_successor(self, current: TreeNode) -> TreeNode:
@@ -138,12 +143,15 @@ class BinarySearchTree(Generic[K, I]):
             It should be a child node having the smallest key among all the
             larger keys.
         """
-        if current is None:  # key not found
-            raise ValueError('Getting successor with non-existent item')
-        successor = current.right
-        while successor.left:
-            successor = successor.left
-        return successor
+        # if current is None:  # key not found
+        #     raise ValueError('Getting successor with non-existent item')
+        # successor = current.right
+        # while successor.left:
+        #     successor = successor.left
+        # return successor
+        if current.right is not None:
+            return self.get_minimal(current.right)
+        return None
 
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
@@ -185,4 +193,12 @@ class BinarySearchTree(Generic[K, I]):
         """
         Finds the kth smallest value by key in the subtree rooted at current.
         """
-        raise NotImplementedError()
+        if current is None:
+            raise ValueError('Getting kth_smallest with none')
+        left_size = 0 if current.left is None else current.left.subtree_size
+        if k <= left_size:
+            return self.kth_smallest(k, current.left)
+        elif k == left_size + 1:
+            return current
+        else:
+            return self.kth_smallest(k - left_size - 1, current.right)
