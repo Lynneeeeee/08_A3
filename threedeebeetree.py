@@ -11,9 +11,18 @@ class BeeNode:
     key: Point
     item: I
     subtree_size: int = 1
+    children: list[BeeNode | None] = field(default_factory=lambda: [None] * 8)
 
     def get_child_for_key(self, point: Point) -> BeeNode | None:
-        raise NotImplementedError()
+        x, y, z = point
+        octant = 0
+        if x < self.key[0]:
+            octant += 1
+        if y < self.key[1]:
+            octant += 2
+        if z < self.key[2]:
+            octant += 4
+        return self.children[octant]
 
 
 class ThreeDeeBeeTree(Generic[I]):
@@ -55,7 +64,25 @@ class ThreeDeeBeeTree(Generic[I]):
         return node.item
 
     def get_tree_node_by_key(self, key: Point) -> BeeNode:
-        raise NotImplementedError()
+        if self.root is None:
+            raise KeyError('Key not found: {0}'.format(key))
+        current = self.root
+        while current:
+            if key == current.key:
+                return current
+            x, y, z = key
+            if x < current.key[0]:
+                octant = 1
+            else:
+                octant = 0
+            if y < current.key[1]:
+                octant += 2
+            if z < current.key[2]:
+                octant += 4
+            child = current.children[octant]
+            if child is None:
+                raise KeyError('Key not found: {0}'.format(key))
+            current = child
 
     def __setitem__(self, key: Point, item: I) -> None:
         self.root = self.insert_aux(self.root, key, item)
@@ -64,11 +91,30 @@ class ThreeDeeBeeTree(Generic[I]):
         """
             Attempts to insert an item into the tree, it uses the Key to insert it
         """
-        raise NotImplementedError()
+        if current is None:
+            self.length += 1
+            return BeeNode(key, item)
+        x, y, z = key
+        if x < current.key[0]:
+            octant = 1
+        else:
+            octant = 0
+        if y < current.key[1]:
+            octant += 2
+        if z < current.key[2]:
+            octant += 4
+        child = current.children[octant]
+        if child is None:
+            current.children[octant] = BeeNode(key, item)
+            self.length += 1
+        else:
+            current.children[octant] = self.insert_aux(child, key, item)
+        current.subtree_size = sum(child.subtree_size for child in current.children if child) + 1
+        return current
 
     def is_leaf(self, current: BeeNode) -> bool:
         """ Simple check whether or not the node is a leaf. """
-        raise NotImplementedError()
+        return all(child is None for child in current.children)
 
 if __name__ == "__main__":
     tdbt = ThreeDeeBeeTree()
