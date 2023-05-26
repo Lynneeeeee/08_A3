@@ -7,44 +7,42 @@ from node import TreeNode
 T = TypeVar("T")
 I = TypeVar("I")
 
+
 class Percentiles(Generic[T]):
 
     def __init__(self) -> None:
-        self.elements = BinarySearchTree()
+        self.bst = BinarySearchTree[T, T]()
     
     def add_point(self, item: T):
-        self.elements[item] = item
+        self.bst[item] = item
     
     def remove_point(self, item: T):
-        del self.elements[item]
+        if item in self.bst:
+            del self.bst[item]
 
-    def ratio(self, x, y):
-        total_elements = len(self.elements)
-        x_rank = int(ceil(total_elements * x / 100))
-        y_rank = int(ceil(total_elements * y / 100))
+    def ratio(self, x: float, y: float) -> List[T]:
+        n = len(self.bst)
+        x_idx = int(n * (x / 100.0)) + 1
+        y_idx = int(n * (y / 100.0)) - 1
 
-        result = []
-        self._traverse_in_order(self.elements.root, x_rank, y_rank, result)
-        return result
+        results = []
 
-    def _traverse_in_order(self, current: TreeNode, x_rank: int, y_rank: int, result: List[T]) -> None:
-        if current is None or len(result) >= y_rank:
-            return
+        # for i in range(x_idx, n - y_idx):
+        #     node = self.bst.kth_smallest(i, self.bst.root)
+        #     results.append(node.item)
+        #
+        # return results
+        if x_idx > y_idx:
+            return results
 
-        if current.left:
-            left_size = current.left.subtree_size
-        else:
-            left_size = 0
+        for i in range(x_idx, n - y_idx + 1):
+            try:
+                node = self.bst.kth_smallest(i, self.bst.root)
+                results.append(node.item)
+            except ValueError:
+                break
 
-        if left_size >= x_rank:
-            self._traverse_in_order(current.left, x_rank, y_rank, result)
-
-        if len(result) < y_rank:
-            result.append(current.item)
-
-        if left_size < y_rank:
-            self._traverse_in_order(current.right, x_rank - left_size - 1, y_rank - left_size - 1, result)
-
+        return results
 
 if __name__ == "__main__":
     points = list(range(50))
