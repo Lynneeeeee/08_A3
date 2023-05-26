@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import math
 from typing import Generic, TypeVar, List
 from math import ceil
 from bst import BinarySearchTree
@@ -11,19 +13,15 @@ I = TypeVar("I")
 class Percentiles(Generic[T]):
 
     def __init__(self) -> None:
-        self.bst = BinarySearchTree[T, T]()
-    
+        self.bst = BinarySearchTree()
+
     def add_point(self, item: T):
         self.bst[item] = item
     
     def remove_point(self, item: T):
-        if item in self.bst:
-            del self.bst[item]
+        del self.bst[item]
 
     def ratio(self, x: float, y: float) -> List[T]:
-        n = len(self.bst)
-        x_idx = int(n * (x / 100.0)) + 1
-        y_idx = int(n * (y / 100.0)) - 1
 
         results = []
 
@@ -32,17 +30,21 @@ class Percentiles(Generic[T]):
         #     results.append(node.item)
         #
         # return results
-        if x_idx > y_idx:
-            return results
+        """
+                x and y are given as percentages between 0 and 100.
+                The function finds all elements that are larger than at least x% of the elements
+                and smaller than at least y% of the elements.
+                """
+        """
+                x and y are given as percentages between 0 and 100.
+                The function finds all elements that are larger than at least x% of the elements
+                and smaller than at least y% of the elements.
+                """
 
-        for i in range(x_idx, n - y_idx + 1):
-            try:
-                node = self.bst.kth_smallest(i, self.bst.root)
-                results.append(node.item)
-            except ValueError:
-                break
-
-        return results
+        n = len(self.bst)
+        lower_rank = int(math.ceil((n - 1) * x / 100))
+        upper_rank = int(math.floor((n - 1) * y / 100))
+        return [self.bst.kth_smallest(rank, self.bst.root).item for rank in range(lower_rank, upper_rank + 1)]
 
 if __name__ == "__main__":
     points = list(range(50))
