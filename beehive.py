@@ -16,13 +16,31 @@ class Beehive:
 class BeehiveSelector:
 
     def __init__(self, max_beehives: int):
-        raise NotImplementedError()
+        self.max_beehives = max_beehives
+        self.beehives = []
 
     def set_all_beehives(self, hive_list: list[Beehive]):
-        raise NotImplementedError()
-    
+        self.beehives = sorted(hive_list[:self.max_beehives], key=lambda hive: hive.volume, reverse=True)
+
+
     def add_beehive(self, hive: Beehive):
-        raise NotImplementedError()
-    
+        if len(self.beehives) < self.max_beehives:
+            self.beehives.append(hive)
+            self.beehives.sort(key=lambda hive: hive.volume, reverse=True)
+        else:
+            if hive.volume > self.beehives[-1].volume:
+                self.beehives.pop()
+                self.beehives.append(hive)
+                self.beehives.sort(key=lambda hive: hive.volume, reverse=True)
+
     def harvest_best_beehive(self):
-        raise NotImplementedError()
+        if len(self.beehives) > 0:
+            hive = self.beehives.pop(0)
+            honey_harvested = min(hive.capacity, hive.volume)
+            emeralds = honey_harvested * hive.nutrient_factor
+            hive.volume -= honey_harvested
+            if hive.volume > 0:
+                self.beehives.insert(0, hive)
+            return emeralds
+        else:
+            return 0.0
