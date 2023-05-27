@@ -38,7 +38,10 @@ class BinarySearchTree(Generic[K, I]):
         return self.root is None
 
     def __len__(self) -> int:
-        """ Returns the number of nodes in the tree. """
+        """
+        Returns the number of nodes in the tree.
+        Complexity: O(1)
+        """
 
         return self.length
 
@@ -156,6 +159,7 @@ class BinarySearchTree(Generic[K, I]):
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
             Get a node having the smallest key in the current sub-tree.
+            Complexity: O(D), where D is the depth of the 'current' node
         """
         if current is None:  # key not found
             raise ValueError('Getting minimal with non-existent item')
@@ -192,6 +196,7 @@ class BinarySearchTree(Generic[K, I]):
     def kth_smallest(self, k: int, current: TreeNode) -> TreeNode:
         """
         Finds the kth smallest value by key in the subtree rooted at current.
+        Complexity: O(n), where n is the number of nodes, as it might need to visit all nodes
         """
 
         # if current:
