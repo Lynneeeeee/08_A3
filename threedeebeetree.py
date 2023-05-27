@@ -130,14 +130,16 @@ class ThreeDeeBeeTree(Generic[I]):
         for child in current.children:  # Add the subtree size of each child to the total
             if child:
                 subtree_size += child.subtree_size
-        # Add one for the current node and assign to current.subtree_size
         current.subtree_size = subtree_size + 1
         return current
 
     def locate_octant(self, current: BeeNode, key: Point) -> int:
         """
-        An aux function to find the location of given key point
-        :param key: The given key of the node
+            An aux function to find the location of given key point
+            :param current: The current Node
+            :param key: The given key of the node
+            :return: Octant number.
+            :complexity: O(1)
         """
         x, y, z = key
         if x < current.key[0]:
@@ -156,6 +158,7 @@ class ThreeDeeBeeTree(Generic[I]):
             if child is not None:
                 return False
         return True
+
 if __name__ == "__main__":
     tdbt = ThreeDeeBeeTree()
     tdbt[(3, 3, 3)] = "A"
