@@ -47,7 +47,7 @@ class MaxHeap(Generic[T]):
         Returns the index of k's child with greatest value.
         :pre: 1 <= k <= self.length // 2
         """
-        
+
         if 2 * k == self.length or \
                 self.the_array[2 * k] > self.the_array[2 * k + 1]:
             return 2 * k
@@ -69,7 +69,7 @@ class MaxHeap(Generic[T]):
             k = max_child
 
         self.the_array[k] = item
-        
+
     def get_max(self) -> T:
         """ Remove (and return) the maximum element from the heap. """
         if self.length == 0:
@@ -88,6 +88,6 @@ if __name__ == '__main__':
 
     for item in items:
         heap.add(item)
-        
+
     while(len(heap) > 0):
         print(heap.get_max())
