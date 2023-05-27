@@ -100,8 +100,10 @@ class BinarySearchTree(Generic[K, I]):
         else:  # key == current.key
             raise ValueError('Inserting duplicate item')
 
-        current.subtree_size = 1 + (current.left.subtree_size if current.left else 0) + (
-            current.right.subtree_size if current.right else 0)
+        left_subtree_size = current.left.subtree_size if current.left else 0
+        right_subtree_size = current.right.subtree_size if current.right else 0
+        current.subtree_size = 1 + left_subtree_size + right_subtree_size
+
         return current
 
     def __delitem__(self, key: K) -> None:
@@ -139,8 +141,10 @@ class BinarySearchTree(Generic[K, I]):
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
-        current.subtree_size = 1 + (current.left.subtree_size if current.left else 0) + (
-            current.right.subtree_size if current.right else 0)
+        left_subtree_size = current.left.subtree_size if current.left else 0
+        right_subtree_size = current.right.subtree_size if current.right else 0
+        current.subtree_size = 1 + left_subtree_size + right_subtree_size
+
         return current
 
     def get_successor(self, current: TreeNode) -> TreeNode:
@@ -198,20 +202,9 @@ class BinarySearchTree(Generic[K, I]):
 
     def kth_smallest(self, k: int, current: TreeNode) -> TreeNode:
         """
-        Finds the kth smallest value by key in the subtree rooted at current.
-        Complexity: O(n), where n is the number of nodes, as it might need to visit all nodes
+            Finds the kth smallest value by key in the subtree rooted at current.
+            Complexity: O(n), where n is the number of nodes, as it might need to visit all nodes
         """
-
-        # if current:
-        #     left_size = current.left.subtree_size if current.left else 0
-        #     if k <= left_size:
-        #         return self.kth_smallest(k, current.left)
-        #     elif k == left_size + 1:
-        #         return current
-        #     else:
-        #         return self.kth_smallest(k - left_size - 1, current.right)
-        # else:
-        #     raise ValueError('Getting kth_smallest with none')
 
         if current:
             left_size = current.left.subtree_size if current.left else 0
@@ -219,9 +212,20 @@ class BinarySearchTree(Generic[K, I]):
                 return self.kth_smallest(k, current.left)
             elif k == left_size + 1:
                 return current
-            elif k <= left_size + 1 + (current.right.subtree_size if current.right else 0):
-                return self.kth_smallest(k - left_size - 1, current.right)
             else:
-                raise ValueError(f'k: {k} exceeds the total number of nodes in the tree')
+                return self.kth_smallest(k - left_size - 1, current.right)
         else:
             raise ValueError('Getting kth_smallest with none')
+
+        # if current:
+        #     left_size = current.left.subtree_size if current.left else 0
+        #     if k <= left_size:
+        #         return self.kth_smallest(k, current.left)
+        #     elif k == left_size + 1:
+        #         return current
+        #     elif k <= left_size + 1 + (current.right.subtree_size if current.right else 0):
+        #         return self.kth_smallest(k - left_size - 1, current.right)
+        #     else:
+        #         raise ValueError(f'k: {k} exceeds the total number of nodes in the tree')
+        # else:
+        #     raise ValueError('Getting kth_smallest with none')

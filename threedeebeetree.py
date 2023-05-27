@@ -91,7 +91,9 @@ class ThreeDeeBeeTree(Generic[I]):
         while current:
             if key == current.key:
                 return current
+
             x, y, z = key
+
             if x < current.key[0]:
                 octant = 1
             else:
