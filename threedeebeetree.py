@@ -91,16 +91,7 @@ class ThreeDeeBeeTree(Generic[I]):
             if key == current.key:
                 return current
 
-            x, y, z = key
-
-            if x < current.key[0]:
-                octant = 1
-            else:
-                octant = 0
-            if y < current.key[1]:
-                octant += 2
-            if z < current.key[2]:
-                octant += 4
+            octant = self.locate_octant(current, key)
             child = current.children[octant]
             if child is None:
                 raise KeyError('Key not found: {0}'.format(key))
@@ -122,11 +113,32 @@ class ThreeDeeBeeTree(Generic[I]):
             :return: The node after insertion.
             :complexity: O(log N), where N is the number of nodes in the tree.
                         In the worst case, the complexity could be O(N).
-
         """
         if current is None:
             self.length += 1
             return BeeNode(key, item)
+
+        octant = self.locate_octant(current, key)
+        child = current.children[octant]
+        if child is None:
+            current.children[octant] = BeeNode(key, item)
+            self.length += 1
+        else:
+            current.children[octant] = self.insert_aux(child, key, item)
+
+        subtree_size = 0
+        for child in current.children:  # Add the subtree size of each child to the total
+            if child:
+                subtree_size += child.subtree_size
+        # Add one for the current node and assign to current.subtree_size
+        current.subtree_size = subtree_size + 1
+        return current
+
+    def locate_octant(self, current: BeeNode, key: Point) -> int:
+        """
+        An aux function to find the location of given key point
+        :param key: The given key of the node
+        """
         x, y, z = key
         if x < current.key[0]:
             octant = 1
@@ -136,25 +148,7 @@ class ThreeDeeBeeTree(Generic[I]):
             octant += 2
         if z < current.key[2]:
             octant += 4
-        child = current.children[octant]
-        if child is None:
-            current.children[octant] = BeeNode(key, item)
-            self.length += 1
-        else:
-            current.children[octant] = self.insert_aux(child, key, item)
-
-        # Initialize subtree size as 0
-        subtree_size = 0
-
-        # Add the subtree size of each child to the total
-        for child in current.children:
-            if child:
-                subtree_size += child.subtree_size
-
-        # Add one for the current node and assign to current.subtree_size
-        current.subtree_size = subtree_size + 1
-
-        return current
+        return octant
 
     def is_leaf(self, current: BeeNode) -> bool:
         """ Simple check whether or not the node is a leaf. """
