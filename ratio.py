@@ -50,12 +50,15 @@ class Percentiles(Generic[T]):
         """
 
         n = len(self.bst)
-        lower_rank = int(math.ceil((n - 1) * x / 100))
-        upper_rank = int(math.floor((n - 1) * y / 100))
+        lower_rank = int(math.ceil((n) * x / 100)) + 1
+        upper_rank = n - int(math.ceil((n) * y / 100)) -1 +1
+        print("up: ", upper_rank)
+        print("low: ", lower_rank)
 
         results = []
         for rank in range(lower_rank, upper_rank + 1):
             node_item = self.bst.kth_smallest(rank, self.bst.root).item
+            print(rank,node_item)
             results.append(node_item)
 
         return results
