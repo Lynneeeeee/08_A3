@@ -14,6 +14,14 @@ class BeeNode:
     children: list[BeeNode | None] = field(default_factory=lambda: [None] * 8)
 
     def get_child_for_key(self, point: Point) -> BeeNode | None:
+        """
+            This method returns the child that corresponds to the provided point.
+            The point is a 3D coordinate.
+
+            :param point: 3D coordinate to determine which child node to return.
+            :return: The child node that corresponds to the provided point.
+            :complexity: O(1)
+        """
         x, y, z = point
         octant = 0
         if x < self.key[0]:
@@ -31,6 +39,7 @@ class ThreeDeeBeeTree(Generic[I]):
     def __init__(self) -> None:
         """
             Initialises an empty 3DBT
+            :complexity: O(1)
         """
         self.root = None
         self.length = 0
@@ -64,6 +73,18 @@ class ThreeDeeBeeTree(Generic[I]):
         return node.item
 
     def get_tree_node_by_key(self, key: Point) -> BeeNode:
+        """
+
+            Attempts to get the tree node associated with a given key.
+            If the key is not found, a KeyError is raised.
+
+            :param key: The key of the node to get.
+            :return: The node associated with the given key.
+            :raises KeyError: If the key is not found in the tree.
+            :complexity: O(log N), where N is the number of nodes in the tree
+                        In the worst case, the complexity could be O(N).
+        """
+
         if self.root is None:
             raise KeyError('Key not found: {0}'.format(key))
         current = self.root
@@ -90,6 +111,17 @@ class ThreeDeeBeeTree(Generic[I]):
     def insert_aux(self, current: BeeNode, key: Point, item: I) -> BeeNode:
         """
             Attempts to insert an item into the tree, it uses the Key to insert it
+            Inserts an item into the tree at the position determined by the key. If the current node is None, a new node
+            is created.
+            If there already exists a node at the determined position, the method is recursively called on the child node.
+
+            :param current: The current node in the tree during the traversal.
+            :param key: The key of the node to insert.
+            :param item: The item to insert in the tree.
+            :return: The node after insertion.
+            :complexity: O(log N), where N is the number of nodes in the tree.
+                        In the worst case, the complexity could be O(N).
+
         """
         if current is None:
             self.length += 1
@@ -109,13 +141,26 @@ class ThreeDeeBeeTree(Generic[I]):
             self.length += 1
         else:
             current.children[octant] = self.insert_aux(child, key, item)
-        current.subtree_size = sum(child.subtree_size for child in current.children if child) + 1
+
+        # Initialize subtree size as 0
+        subtree_size = 0
+
+        # Add the subtree size of each child to the total
+        for child in current.children:
+            if child:
+                subtree_size += child.subtree_size
+
+        # Add one for the current node and assign to current.subtree_size
+        current.subtree_size = subtree_size + 1
+
         return current
 
     def is_leaf(self, current: BeeNode) -> bool:
         """ Simple check whether or not the node is a leaf. """
-        return all(child is None for child in current.children)
-
+        for child in current.children:
+            if child is not None:
+                return False
+        return True
 if __name__ == "__main__":
     tdbt = ThreeDeeBeeTree()
     tdbt[(3, 3, 3)] = "A"
