@@ -44,13 +44,14 @@ class Percentiles(Generic[T]):
             x – Percentage value for the lower limit.
             y – Percentage value for the upper limit.
             Returns:
-            List of elements that are larger than at least x% of the elements and smaller than at least y% of the elements.
+            List of elements that are larger than at least x% of the elements
+            and smaller than at least y% of the elements.
             :complexity: O(log n + O), where O is the number of points returned by the function.
         """
 
         n = len(self.bst)
-        lower_rank = int(math.ceil((n) * x / 100)) + 1
-        upper_rank = n - int(math.ceil((n) * y / 100)) - 1 + 1
+        lower_rank = math.ceil(n * x / 100) + 1
+        upper_rank = math.floor(n - n * y / 100)
 
         results = []
         for rank in range(lower_rank, upper_rank + 1):
@@ -59,13 +60,13 @@ class Percentiles(Generic[T]):
 
         return results
 
-
-if __name__ == "__main__":
-    points = list(range(50))
-    import random
-    random.shuffle(points)
-    p = Percentiles()
-    for point in points:
-        p.add_point(point)
-    # Numbers from 8 to 16.
-    print(p.ratio(15, 66))
+#
+# if __name__ == "__main__":
+#     points = list(range(50))
+#     import random
+#     random.shuffle(points)
+#     p = Percentiles()
+#     for point in points:
+#         p.add_point(point)
+#     # Numbers from 8 to 16.
+#     print(p.ratio(15, 66))

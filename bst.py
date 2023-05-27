@@ -150,15 +150,9 @@ class BinarySearchTree(Generic[K, I]):
     def get_successor(self, current: TreeNode) -> TreeNode:
         """
             Get successor of the current node.
-            It should be a child node having the smallest key among all the
-            larger keys.
+            It should be a child node having the smallest key among all the larger keys.
+            Complexity: O(D), where D is the depth of the 'current' node
         """
-        # if current is None:  # key not found
-        #     raise ValueError('Getting successor with non-existent item')
-        # successor = current.right
-        # while successor.left:
-        #     successor = successor.left
-        # return successor
         if current.right is not None:
             return self.get_minimal(current.right)
         return None
@@ -217,15 +211,3 @@ class BinarySearchTree(Generic[K, I]):
         else:
             raise ValueError('Getting kth_smallest with none')
 
-        # if current:
-        #     left_size = current.left.subtree_size if current.left else 0
-        #     if k <= left_size:
-        #         return self.kth_smallest(k, current.left)
-        #     elif k == left_size + 1:
-        #         return current
-        #     elif k <= left_size + 1 + (current.right.subtree_size if current.right else 0):
-        #         return self.kth_smallest(k - left_size - 1, current.right)
-        #     else:
-        #         raise ValueError(f'k: {k} exceeds the total number of nodes in the tree')
-        # else:
-        #     raise ValueError('Getting kth_smallest with none')

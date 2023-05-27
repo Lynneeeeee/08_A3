@@ -74,7 +74,6 @@ class ThreeDeeBeeTree(Generic[I]):
 
     def get_tree_node_by_key(self, key: Point) -> BeeNode:
         """
-
             Attempts to get the tree node associated with a given key.
             If the key is not found, a KeyError is raised.
 
@@ -88,7 +87,7 @@ class ThreeDeeBeeTree(Generic[I]):
         if self.root is None:
             raise KeyError('Key not found: {0}'.format(key))
         current = self.root
-        while current:
+        while current:  # Loop until find the specific node
             if key == current.key:
                 return current
 
