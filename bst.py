@@ -109,8 +109,11 @@ class BinarySearchTree(Generic[K, I]):
 
     def delete_aux(self, current: TreeNode, key: K) -> TreeNode:
         """
-            Attempts to delete an item from the tree, it uses the Key to
-            determine the node to delete.
+            Attempts to delete an item from the tree, it uses the Key to determine the node to delete.
+            :param key: Key of the node to delete.
+            :return: Root of the (sub-)tree after the deletion.
+            :complexity: O(log(N)) for balanced tree, O(N) for unbalanced tree.
+
         """
 
         if current is None:  # key not found

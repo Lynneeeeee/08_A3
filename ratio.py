@@ -13,38 +13,53 @@ I = TypeVar("I")
 class Percentiles(Generic[T]):
 
     def __init__(self) -> None:
+        """
+            Initializes an instance of the class with an empty Binary Search Tree.
+            :complexity: O(1)
+        """
         self.bst = BinarySearchTree()
 
     def add_point(self, item: T):
+        """
+           Inserts an item into the Binary Search Tree.
+           :param item: The item to be added to the Binary Search Tree.
+           :complexity:  O(log n), when the tree is balanced.
+        """
         self.bst[item] = item
     
     def remove_point(self, item: T):
+        """
+            Deletes an item from the Binary Search Tree.
+            :param item: The item to be removed from the Binary Search Tree.
+            :complexity: O(log n), when the tree is balanced.
+        """
         del self.bst[item]
 
     def ratio(self, x: float, y: float) -> List[T]:
-
-        results = []
-
-        # for i in range(x_idx, n - y_idx):
-        #     node = self.bst.kth_smallest(i, self.bst.root)
-        #     results.append(node.item)
-        #
-        # return results
         """
-                x and y are given as percentages between 0 and 100.
-                The function finds all elements that are larger than at least x% of the elements
-                and smaller than at least y% of the elements.
-                """
+            x and y are given as percentages between 0 and 100.
+            The function finds all elements that are larger than at least x% of the elements
+            and smaller than at least y% of the elements.
+
+            Params:
+            x – Percentage value for the lower limit.
+            y – Percentage value for the upper limit.
+            Returns:
+            List of elements that are larger than at least x% of the elements and smaller than at least y% of the elements.
+            :complexity: O(log n + O), where O is the number of points returned by the function.
         """
-                x and y are given as percentages between 0 and 100.
-                The function finds all elements that are larger than at least x% of the elements
-                and smaller than at least y% of the elements.
-                """
 
         n = len(self.bst)
         lower_rank = int(math.ceil((n - 1) * x / 100))
         upper_rank = int(math.floor((n - 1) * y / 100))
-        return [self.bst.kth_smallest(rank, self.bst.root).item for rank in range(lower_rank, upper_rank + 1)]
+
+        results = []
+        for rank in range(lower_rank, upper_rank + 1):
+            node_item = self.bst.kth_smallest(rank, self.bst.root).item
+            results.append(node_item)
+
+        return results
+
 
 if __name__ == "__main__":
     points = list(range(50))
