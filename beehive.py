@@ -16,26 +16,29 @@ class Beehive:
 
 
 class HeapBeehive:
-    """Wrapper around Beehive to make it work in a MaxHeap"""
+    """
+    Wrapper around Beehive to make it work in a MaxHeap
+    The volume attribute represents the potential yield of a beehive.
+    """
 
-    def __init__(self, beehive: Beehive, value: float):
+    def __init__(self, beehive: Beehive, volume: float):
         self.beehive = beehive
-        self.value = value
+        self.volume = volume
 
     def __lt__(self, other):
-        return self.value < other.value
+        return self.volume < other.volume
 
     def __le__(self, other):
-        return self.value <= other.value
+        return self.volume <= other.volume
 
     def __gt__(self, other):
-        return self.value > other.value
+        return self.volume > other.volume
 
     def __ge__(self, other):
-        return self.value >= other.value
+        return self.volume >= other.volume
 
     def __eq__(self, other):
-        return self.value == other.value
+        return self.volume == other.volume
 
 
 class BeehiveSelector:
@@ -64,8 +67,8 @@ class BeehiveSelector:
             :param hive: The Beehive object to add.
             :complexity: O(log N), where N is the number of beehives in the heap.
         """
-        hive_value = min(hive.capacity, hive.volume) * hive.nutrient_factor
-        self.beehives_heap.add(HeapBeehive(beehive=hive, value=hive_value))
+        hive_volume = min(hive.capacity, hive.volume) * hive.nutrient_factor
+        self.beehives_heap.add(HeapBeehive(beehive=hive, volume=hive_volume))
 
     def harvest_best_beehive(self):
         """
@@ -87,4 +90,3 @@ class BeehiveSelector:
             self.add_beehive(best_beehive)
 
         return emeralds_earned
-
