@@ -75,7 +75,6 @@ def collect_worst_ratio(node: BeeNode):
         try:
             default = max(default, (pos_z/neg_z, neg_z, "z"), (neg_z/pos_z, pos_z, "z"))
         except ZeroDivisionError:
-            print(pos_z,neg_z)
             default = (float('inf'), (pos_z, neg_z), "z")
     return max(default, default, *(collect_worst_ratio(child) for child in [
         neg_x_neg_y_neg_z,
@@ -103,7 +102,6 @@ class TestBalancing(unittest.TestCase):
             (8, 9, 7),
         ]
         new_ordering = make_ordering(points[:])
-        print("outer",new_ordering)
         self.assertSetEqual(set(points), set(new_ordering))
 
     @timeout()
