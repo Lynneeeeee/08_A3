@@ -1,22 +1,23 @@
 from __future__ import annotations
+
+import ratio
 from threedeebeetree import Point
 
 
 def make_ordering(my_coordinate_list: list[Point]) -> list[Point]:
-    def make_ordering_aux(points: list[Point], depth: int) -> list[Point]:
-        if not points:
-            return []
+    x_coordinates = [point[0] for point in my_coordinate_list]
+    results = []
 
-        # choose axis based on depth so that axis cycles through x, y, z
-        axis = depth % 3
+    p = ratio.Percentiles()
+    for x in x_coordinates:
+        p.add_point(x)
 
-        # sort point list and choose median as root
-        points.sort(key=lambda point: point[axis])
-        median = len(points) // 2
+    percentile_values = p.ratio(0, 100)
 
-        # create node and construct subtrees
-        return [points[median]] + make_ordering_aux(points[:median], depth + 1) + make_ordering_aux(points[median + 1:],
-                                                                                                    depth + 1)
+    for value in percentile_values:
+        for point in my_coordinate_list:
+            if point[0] == value:
+                results.append(point)
+                break
 
-    return make_ordering_aux(my_coordinate_list, 0)
-
+    return results
