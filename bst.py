@@ -199,7 +199,7 @@ class BinarySearchTree(Generic[K, I]):
             Finds the kth smallest value by key in the subtree rooted at current.
             Complexity: O(n), where n is the number of nodes, as it might need to visit all nodes
         """
-
+        #print("inner",current)
         if current:
             left_size = current.left.subtree_size if current.left else 0
             if k <= left_size:

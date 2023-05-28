@@ -1,25 +1,52 @@
 from __future__ import annotations
-
-import ratio
+import ratio,bst
 from threedeebeetree import Point
+class tempNode:
+    def __init__(self,k,v):
+        self.k=k
+        self.v=v
 
+    def __lt__(self, other):
+        return self.k < other.k
+    def __gt__(self, other):
+        return self.k > other.k
+
+    def __eq__(self, other):
+        return self.k==other.k
 
 def make_ordering(my_coordinate_list: list[Point]) -> list[Point]:
-    x_coordinates = [point[0] for point in my_coordinate_list]
-    results = []
 
-    p = ratio.Percentiles()
-    for x in x_coordinates:
-        p.add_point(x)
+    px = ratio.Percentiles()
+    py = ratio.Percentiles()
+    pz = ratio.Percentiles()
+    bstX=bst.BinarySearchTree()
+    for i,p in enumerate(my_coordinate_list):
+        px.add_point(tempNode(p[0],i))
+        py.add_point(tempNode(p[1], i))
+        pz.add_point(tempNode(p[2], i))
 
-    percentile_values = p.ratio(0, 0)
-    # print(percentile_values)
-    for value in percentile_values:
-        for point in my_coordinate_list:
-            # print(point)
-            if point[1] == value:
-                results.append(point)
-                break
+    x_idx = px.ratio(12.6, 12.6)
+    y_idx = py.ratio(12.6, 12.6)
+    z_idx = pz.ratio(12.6, 12.6)
+    x_list = set([p.v for p in x_idx])
+    y_list = set([p.v for p in y_idx])
+    z_list = set([p.v for p in z_idx])
+
+    potential=list(x_list & y_list & z_list)
+    idx=potential[0]
+    key=my_coordinate_list[idx]
+    children=[[] for _ in range(8)]
+    for current in my_coordinate_list:
+        if current==key: continue
+        octant = sum((1 if key[i] < current[i] else 0) << i for i in range(3))
+        children[octant].append(current)
+
+    results=[key]
+
+    for l in children:
+        if len(l)>17:
+            l=make_ordering(l[:])
+        results+=l
 
     return results
 
