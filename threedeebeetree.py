@@ -91,14 +91,7 @@ class ThreeDeeBeeTree(Generic[I]):
             if key == current.key:
                 return current
 
-            x, y, z = key
-            octant = 0
-            if x < current.key[0]:
-                octant += 1
-            if y < current.key[1]:
-                octant += 2
-            if z < current.key[2]:
-                octant += 4
+            octant = sum((1 if key[i] < current.key[i] else 0) << i for i in range(3))
 
             child = current.children[octant]
             if child is None:
@@ -126,14 +119,7 @@ class ThreeDeeBeeTree(Generic[I]):
             self.length += 1
             return BeeNode(key, item)
 
-        x, y, z = key
-        octant = 0
-        if x < current.key[0]:
-            octant += 1
-        if y < current.key[1]:
-            octant += 2
-        if z < current.key[2]:
-            octant += 4
+        octant = sum((1 if key[i] < current.key[i] else 0) << i for i in range(3))
 
         child = current.children[octant]
         if child is None:
@@ -155,6 +141,7 @@ class ThreeDeeBeeTree(Generic[I]):
             if child is not None:
                 return False
         return True
+
 
 if __name__ == "__main__":
     tdbt = ThreeDeeBeeTree()

@@ -1,10 +1,9 @@
 from __future__ import annotations
 from threedeebeetree import Point
-from typing import List
 
 
 def make_ordering(my_coordinate_list: list[Point]) -> list[Point]:
-    def make_ordering_aux(points: List[Point], depth: int) -> List[Point]:
+    def make_ordering_aux(points: list[Point], depth: int) -> list[Point]:
         if not points:
             return []
 
@@ -20,3 +19,4 @@ def make_ordering(my_coordinate_list: list[Point]) -> list[Point]:
                                                                                                     depth + 1)
 
     return make_ordering_aux(my_coordinate_list, 0)
+
