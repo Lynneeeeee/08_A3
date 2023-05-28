@@ -13,9 +13,11 @@ def make_ordering(my_coordinate_list: list[Point]) -> list[Point]:
         p.add_point(x)
 
     percentile_values = p.ratio(0, 0)
+    # print(percentile_values)
     for value in percentile_values:
         for point in my_coordinate_list:
-            if point[0] == value:
+            # print(point)
+            if point[1] == value:
                 results.append(point)
                 break
 
