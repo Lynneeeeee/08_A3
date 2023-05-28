@@ -80,8 +80,8 @@ class ThreeDeeBeeTree(Generic[I]):
             :param key: The key of the node to get.
             :return: The node associated with the given key.
             :raises KeyError: If the key is not found in the tree.
-            :complexity: O(log N), where N is the number of nodes in the tree
-                        In the worst case, the complexity could be O(N).
+            :complexity: best O(log N), where N is the number of nodes in the tree
+                         worst case O(N).
         """
 
         if self.root is None:
@@ -91,7 +91,15 @@ class ThreeDeeBeeTree(Generic[I]):
             if key == current.key:
                 return current
 
-            octant = self.locate_octant(current, key)
+            x, y, z = key
+            octant = 0
+            if x < current.key[0]:
+                octant += 1
+            if y < current.key[1]:
+                octant += 2
+            if z < current.key[2]:
+                octant += 4
+
             child = current.children[octant]
             if child is None:
                 raise KeyError('Key not found: {0}'.format(key))
@@ -112,13 +120,21 @@ class ThreeDeeBeeTree(Generic[I]):
             :param item: The item to insert in the tree.
             :return: The node after insertion.
             :complexity: O(log N), where N is the number of nodes in the tree.
-                        In the worst case, the complexity could be O(N).
+                        worst case, O(N).
         """
         if current is None:
             self.length += 1
             return BeeNode(key, item)
 
-        octant = self.locate_octant(current, key)
+        x, y, z = key
+        octant = 0
+        if x < current.key[0]:
+            octant += 1
+        if y < current.key[1]:
+            octant += 2
+        if z < current.key[2]:
+            octant += 4
+
         child = current.children[octant]
         if child is None:
             current.children[octant] = BeeNode(key, item)
@@ -132,25 +148,6 @@ class ThreeDeeBeeTree(Generic[I]):
                 subtree_size += child.subtree_size
         current.subtree_size = subtree_size + 1
         return current
-
-    def locate_octant(self, current: BeeNode, key: Point) -> int:
-        """
-            An aux function to find the location of given key point
-            :param current: The current Node
-            :param key: The given key of the node
-            :return: Octant number.
-            :complexity: O(1)
-        """
-        x, y, z = key
-        if x < current.key[0]:
-            octant = 1
-        else:
-            octant = 0
-        if y < current.key[1]:
-            octant += 2
-        if z < current.key[2]:
-            octant += 4
-        return octant
 
     def is_leaf(self, current: BeeNode) -> bool:
         """ Simple check whether or not the node is a leaf. """
